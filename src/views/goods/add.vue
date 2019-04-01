@@ -5,7 +5,7 @@
         <el-input v-model="form.name"/>
       </el-form-item>
       <el-form-item label="所属类别" prop="category">
-        <el-select v-model="form.category">
+        <el-select v-model="form.category.name">
           <el-option v-for="category in categories" :key="category.name" :label="category.name" :value="category.name"/>
         </el-select>
       </el-form-item>
@@ -20,10 +20,13 @@
       </el-form-item>
       <el-form-item label="商品图片" prop="pictures">
         <el-upload
+          name="pic"
           :action="uploadUrl"
           :auto-upload="true"
           :file-list="form.pictures"
-          list-type="picture" >
+          list-type="picture"
+          :on-success="handleSuccess"
+          :headers="{Authorization: token}">
           <el-button size="small" type="primary">点击上传</el-button>
           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
         </el-upload>
@@ -62,15 +65,17 @@
   </div>
 </template>
 <script>
-import { picUploadUrl, addGood } from '../../api/goods'
+  import {picUploadUrl, addGood, getCategories, uploadPic} from '../../api/goods'
+  import {getToken} from "../../utils/auth";
 
 export default {
   name: 'Add',
   data() {
     return {
+      token: '',
       form: {
         name: '',
-        category: '',
+        category: {name: ''},
         stock: 0,
         options: [{
           key: '选项1',
@@ -83,6 +88,12 @@ export default {
       categories: [{ name: '补充维生素' }],
       uploadUrl: picUploadUrl
     }
+  },
+  created: function() {
+    this.token = 'Bearer ' + getToken()
+    getCategories().then(response => {
+      this.categories = response.data.categories
+    })
   },
   methods: {
     addOption: function() {
@@ -98,16 +109,23 @@ export default {
       this.form.options[index].values.splice(innerIndex, 1)
     },
     handleSubmit: function() {
-      this.$refs['form'].resetFields()
       addGood(this.form).then((response) => {
         if (response.code == 20000) {
           this.$message({
             type: 'success',
             message: '提交成功'
           })
+          this.$refs['form'].resetFields()
         } else {
           this.$message.error('网络错误')
         }
+      })
+    },
+    handleSuccess: function(response, file, fileList) {
+      console.log(response);
+      this.form.pictures.push({
+        name: response.data.file.filename,
+        url: response.data.file.path
       })
     }
   }

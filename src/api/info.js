@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getInfoByTime(startTime, endTime) {
   return request({
-    url: '/info/time',
+    url: '/admin/info/time',
     method: 'get',
     params: {
       startTime: startTime,
@@ -13,7 +13,7 @@ export function getInfoByTime(startTime, endTime) {
 
 export function getInfoByGood(startTime, endTime) {
   return request({
-    url: '/info/good',
+    url: '/admin/info/good',
     method: 'get',
     params: {
       startTime: startTime,

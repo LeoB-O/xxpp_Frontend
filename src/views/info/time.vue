@@ -53,12 +53,14 @@ export default {
   },
   mounted: function() {
     this.chart = echarts.init(document.getElementById('chart'))
-    this.chart.setOption(this.option)
+    getInfoByTime().then(response => {
+      this.option = response.data.option
+      this.chart.setOption(this.option)
+    })
   },
   methods: {
     handleClick: function() {
       getInfoByTime(this.startDate.getTime(), this.endDate.getTime()).then(response => {
-        console.log(response)
         this.option = response.data.option
         this.chart.setOption(this.option)
       })

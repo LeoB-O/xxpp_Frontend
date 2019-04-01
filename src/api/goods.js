@@ -24,9 +24,29 @@ export function getCategories() {
   })
 }
 
+export function addCategory(name) {
+  return request({
+    url: '/admin/category',
+    method: 'post',
+    data: {
+      name: name
+    }
+  })
+}
+
+export function deleteCategory(id) {
+  return request({
+    url: '/admin/category',
+    method: 'delete',
+    params: {
+      id: id
+    }
+  })
+}
+
 export function addGood(good) {
   return request({
-    url: '/good',
+    url: '/admin/good',
     method: 'post',
     data: good
   })
@@ -34,8 +54,8 @@ export function addGood(good) {
 
 export function changeStatus(goodId, status) {
   return request({
-    url: '/good/status',
-    method: 'post',
+    url: '/admin/good/status',
+    method: 'put',
     data: {
       id: goodId,
       status: status
@@ -45,7 +65,7 @@ export function changeStatus(goodId, status) {
 
 export function editGood(good) {
   return request({
-    url: '/good',
+    url: '/admin/good',
     method: 'put',
     data: {
       good: good
@@ -53,4 +73,27 @@ export function editGood(good) {
   })
 }
 
-export const picUploadUrl = process.env.BASE_API + '/upload'
+export function deleteGood(goodId) {
+  return request({
+    url: '/admin/good',
+    method: 'delete',
+    params: {
+      id: goodId
+    }
+  })
+}
+
+export function uploadPic(files) {
+  let data = new FormData();
+  data.append('pic', data);
+  return  request({
+    url: '/admin/upload',
+    method: 'post',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    },
+    data: data
+  })
+}
+
+export const picUploadUrl = process.env.BASE_API + '/admin/upload'

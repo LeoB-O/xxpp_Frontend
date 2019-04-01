@@ -4,8 +4,17 @@
       <el-form-item label="收货人">
         <el-input v-model="form.name"/>
       </el-form-item>
-      <el-form-item label="收货地址">
-        <el-input v-model="form.address"/>
+      <el-form-item label="省">
+        <el-input v-model="form.province"/>
+      </el-form-item>
+      <el-form-item label="市">
+        <el-input v-model="form.city"/>
+      </el-form-item>
+      <el-form-item label="区">
+        <el-input v-model="form.district"/>
+      </el-form-item>
+      <el-form-item label="详细地址">
+        <el-input v-model="form.detail"/>
       </el-form-item>
       <el-form-item label="联系电话">
         <el-input v-model="form.phone"/>
@@ -63,7 +72,10 @@ export default {
     return {
       form: {
         name: '',
-        address: '',
+        province: '',
+        city: '',
+        district: '',
+        detail: '',
         phone: '',
         status: '',
         items: [{
@@ -111,8 +123,9 @@ export default {
         if (item.options[i].key == optionKey) {
           return i
         }
-        // return 0
       }
+      item.options.push({key: optionKey, value: ''})
+      return item.options.length-1
     }
   }
 }

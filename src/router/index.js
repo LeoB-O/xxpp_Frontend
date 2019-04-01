@@ -69,6 +69,34 @@ export const constantRouterMap = [{
   }]
 },
 
+  {
+    path: '/category',
+    component: Layout,
+    redirect: '/category/index',
+    name: 'Category',
+    meta: {
+      title: '类别管理',
+      icon: 'table'
+    },
+    children: [{
+      path: 'index',
+      name: 'CategoryList',
+      component: () => import('@/views/category/index'),
+      meta: {
+        title: '类别列表',
+        icon: 'table'
+      }
+    }, {
+      path: 'add',
+      name: 'AddCategory',
+      component: () => import('@/views/category/add'),
+      meta: {
+        title: '添加类别',
+        icon: 'eye'
+      }
+    }]
+  },
+
 {
   path: '/order',
   component: Layout,

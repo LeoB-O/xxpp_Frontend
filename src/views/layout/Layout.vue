@@ -12,6 +12,7 @@
 <script>
 import { Navbar, Sidebar, AppMain } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
+import io from 'socket.io-client'
 
 export default {
   name: 'Layout',
@@ -20,7 +21,19 @@ export default {
     Sidebar,
     AppMain
   },
+  data() {
+    return {
+      io: ''
+    }
+  },
   mixins: [ResizeMixin],
+  created: function() {
+    this.io = io('localhost:3000')
+    this.io.emit('print', {data: 'from client emit print'})
+    this.io.on('print', function (data) {
+      console.log(data)
+    })
+  },
   computed: {
     sidebar() {
       return this.$store.state.app.sidebar

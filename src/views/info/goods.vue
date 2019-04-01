@@ -58,12 +58,14 @@
     },
     mounted: function () {
       this.chart = echarts.init(document.getElementById('chart'));
-      this.chart.setOption(this.option)
+      getInfoByGood().then(response => {
+        this.option = response.data.option
+        this.chart.setOption(this.option)
+      })
     },
     methods: {
       handleClick: function () {
         getInfoByGood(this.startDate.getTime(), this.endDate.getTime()).then(response => {
-          console.log(response)
           this.option = response.data.option
           this.chart.setOption(this.option)
         })

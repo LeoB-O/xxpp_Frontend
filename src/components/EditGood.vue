@@ -5,7 +5,7 @@
         <el-input v-model="form.name"/>
       </el-form-item>
       <el-form-item label="所属类别">
-        <el-select v-model="form.category">
+        <el-select v-model="form.category.name">
           <el-option v-for="category in categories" :key="category.name" :label="category.name" :value="category.name"/>
         </el-select>
       </el-form-item>
@@ -14,10 +14,14 @@
       </el-form-item>
       <el-form-item label="商品图片">
         <el-upload
+          name="pic"
           :action="uploadUrl"
           :auto-upload="true"
           :file-list="form.pictures"
-          list-type="picture" >
+          list-type="picture"
+          :on-success="handleSuccess"
+          :on-remove="handleRemove"
+          :headers="{Authorization: token}">
           <el-button size="small" type="primary">点击上传</el-button>
           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
         </el-upload>
@@ -26,7 +30,7 @@
         <el-input :autosize="{minRows: 10}" type="textarea" v-model="form.description"/>
       </el-form-item>
       <el-form-item label="可选项">
-        <div v-for="(option, index) in form.options" :key="option.key">
+        <div v-for="(option, index) in form.options" :key="index">
           <el-row>
             <el-col :span="10">
               <el-input v-model="option.key"/>
@@ -57,6 +61,7 @@
 
 <script>
 import { getGood, getCategories, picUploadUrl, editGood } from '../api/goods'
+import {getToken} from "../utils/auth";
 export default {
   name: 'EditGood',
   props: {
@@ -69,8 +74,8 @@ export default {
       default: ''
     },
     category: {
-      type: String,
-      default: ''
+      type: Object,
+      default: () => {name: ''}
     },
     stock: {
       type: Number,
@@ -105,24 +110,33 @@ export default {
         pictures: [],
         description: ''
       },
+      token: '',
       categories: [],
       uploadUrl: picUploadUrl
     }
   },
   created: function() {
-    this.form.id = this.goodId
-    getCategories().then((response) => {
+    this.token = 'Bearer ' + getToken()
+    getCategories().then(response => {
       this.categories = response.data.categories
     })
-    getGood(this.goodId).then((response) => {
-      const good = response.data.good
-      this.form.name = good.name || this.name
-      this.form.category = good.category || this.category
-      this.form.stock = good.stock || this.stock
-      this.form.options = good.options || this.options
-      this.form.pictures = good.pictures || this.pictures
-      this.form.description = good.description || this.description
-    })
+  },
+  watch: {
+    goodId: function() {
+      this.form.id = this.goodId
+      getCategories().then((response) => {
+        this.categories = response.data.categories
+      })
+      getGood(this.goodId).then((response) => {
+        const good = response.data.good
+        this.form.name = good.name || this.name
+        this.form.category = good.category || this.category
+        this.form.stock = good.stock || this.stock
+        this.form.options = good.options || this.options
+        this.form.pictures = good.pictures || this.pictures
+        this.form.description = good.description || this.description
+      })
+    }
   },
   methods: {
     addOption: function() {
@@ -150,6 +164,15 @@ export default {
         }
       })
       this.$emit('confirm')
+    },
+    handleSuccess: function(response, file, fileList) {
+      this.form.pictures.push({
+        name: response.data.file.filename,
+        url: response.data.file.path
+      })
+    },
+    handleRemove: function (file, fileList) {
+      this.form.pictures = fileList
     }
   }
 }

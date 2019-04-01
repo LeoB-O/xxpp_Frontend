@@ -1,8 +1,9 @@
 import request from '@/utils/request'
+import order from "../../mock/order";
 
 export function getOrders(start=0, offset=30) {
   return request({
-    url: '/orders',
+    url: '/admin/orders',
     method: 'get',
     params: {
       start: start,
@@ -23,10 +24,20 @@ export function getOrder(orderId) {
 
 export function editOrder(order) {
   return request({
-    url: '/order',
+    url: '/admin/order',
     method: 'put',
     data: {
       order: order
+    }
+  })
+}
+
+export function deleteOrder(orderId) {
+  return request({
+    url: '/admin/order',
+    method: 'delete',
+    params: {
+      id: orderId
     }
   })
 }
