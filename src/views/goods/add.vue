@@ -18,6 +18,9 @@
       <el-form-item label="剩余库存" prop="stock">
         <el-input-number v-model="form.stock"/>
       </el-form-item>
+      <el-form-item label="价格">
+        <el-input-number v-model="form.price"/>
+      </el-form-item>
       <el-form-item label="商品图片" prop="pictures">
         <el-upload
           name="pic"
@@ -83,7 +86,8 @@ export default {
         }],
         pictures: [],
         status: '',
-        description: ''
+        description: '',
+        price: 0
       },
       categories: [{ name: '补充维生素' }],
       uploadUrl: picUploadUrl

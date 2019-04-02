@@ -20,6 +20,7 @@
       </el-table-column>
       <el-table-column prop="id" label="ID"/>
       <el-table-column prop="name" label="商品名称"/>
+      <el-table-column prop="price" label="价格"/>
       <el-table-column prop="category.name" label="所属类别"/>
       <el-table-column prop="stock" label="剩余库存"/>
       <el-table-column label="可选项">
@@ -40,7 +41,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <EditGood :goodId="currentGood" :is-visible="isVisible" @cancel="isVisible = false" @confirm="isVisible = false"/>
+    <EditGood :goodId="currentGood" :is-visible="isVisible" @cancel="isVisible = false" @confirm="handleConfirm"/>
   </div>
 </template>
 
@@ -150,7 +151,7 @@ export default {
         });
       });
     },
-    handleDeleteReview(good, reviewId) {
+    handleDeleteReview: function(good, reviewId) {
       this.$confirm('此操作将永久删除该项目, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -178,6 +179,29 @@ export default {
           message: '已取消删除'
         });
       });
+    },
+    handleConfirm: function () {
+      this.isVisible = false;
+      getGoods().then((response) => {
+        this.goods = response.data.goods.map(value => {
+          return {
+            id: value.id,
+            name: value.name,
+            category: value.category,
+            stock: value.stock,
+            status: value.status,
+            pictures: value.pictures,
+            description: value.description,
+            price: value.price,
+            options: value.options,
+            reviews: [],
+            start: 0,
+            offset: 30,
+            hasMore: true
+          }
+        })
+      }).catch((e) => {
+      })
     }
   }
 }

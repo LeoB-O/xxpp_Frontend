@@ -12,6 +12,9 @@
       <el-form-item label="剩余库存">
         <el-input-number v-model="form.stock"/>
       </el-form-item>
+      <el-form-item label="价格">
+        <el-input-number v-model="form.price"/>
+      </el-form-item>
       <el-form-item label="商品图片">
         <el-upload
           name="pic"
@@ -108,7 +111,8 @@ export default {
         stock: 0,
         options: [],
         pictures: [],
-        description: ''
+        description: '',
+        price: 0
       },
       token: '',
       categories: [],
@@ -135,6 +139,7 @@ export default {
         this.form.options = good.options || this.options
         this.form.pictures = good.pictures || this.pictures
         this.form.description = good.description || this.description
+        this.form.price = good.price || this.price
       })
     }
   },
