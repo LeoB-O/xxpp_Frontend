@@ -34,6 +34,11 @@
           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
         </el-upload>
       </el-form-item>
+      <el-form-item label="展示图片" prop="previewPic">
+        <el-select v-model="form.previewPic">
+          <el-option v-for="p in form.pictures" :label="p.name" :value="p.url" :key="p.key"/>
+        </el-select>
+      </el-form-item>
       <el-form-item label="商品详情" prop="description">
         <el-input :autosize="{minRows: 10}" type="textarea" v-model="form.description"/>
       </el-form-item>
@@ -85,6 +90,7 @@ export default {
           values: ['值1']
         }],
         pictures: [],
+        previewPic: '',
         status: '',
         description: '',
         price: 0

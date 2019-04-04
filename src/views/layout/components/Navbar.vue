@@ -3,10 +3,12 @@
     <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container"/>
     <breadcrumb />
     <el-dropdown class="avatar-container" trigger="click">
+      <el-badge :value="newOrderNum" :hidden="newOrderNum==0" style="margin-top: 10px;">
       <div class="avatar-wrapper">
-        <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-        <i class="el-icon-caret-bottom"/>
+          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <i class="el-icon-caret-bottom"/>
       </div>
+      </el-badge>
       <el-dropdown-menu slot="dropdown" class="user-dropdown">
         <router-link class="inlineBlock" to="/">
           <el-dropdown-item>
@@ -35,7 +37,10 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar'
-    ])
+    ]),
+    newOrderNum: function () {
+      return this.$store.state.order.newOrderNum
+    }
   },
   methods: {
     toggleSideBar() {
@@ -52,12 +57,12 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
-  height: 50px;
-  line-height: 50px;
+  height: 60px;
+  line-height: 60px;
   box-shadow: 0 1px 3px 0 rgba(0,0,0,.12), 0 0 3px 0 rgba(0,0,0,.04);
   .hamburger-container {
     line-height: 58px;
-    height: 50px;
+    height: 60px;
     float: left;
     padding: 0 10px;
   }

@@ -78,16 +78,7 @@ export default {
         detail: '',
         phone: '',
         status: '',
-        items: [{
-          id: '123',
-          name: '香蕉',
-          amount: 3,
-          options: [{
-            key: '选项1',
-            value: '值1'
-          }],
-          price: 32
-        }]
+        items: []
       },
       goods: []
     }
@@ -116,7 +107,7 @@ export default {
       this.$emit('confirm')
     },
     getGoodById: function(id) {
-      return this.goods.filter(value => id == value.id)[0]
+      return this.goods.filter(value => id == value.id)[0] || []
     },
     getOptionIndex: function(item, optionKey) {
       for (let i=0;i<item.options.length;i++) {

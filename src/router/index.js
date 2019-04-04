@@ -48,7 +48,7 @@ export const constantRouterMap = [{
   name: 'Goods',
   meta: {
     title: '商品管理',
-    icon: 'example'
+    icon: 'price-tag'
   },
   children: [{
     path: 'index',
@@ -56,7 +56,7 @@ export const constantRouterMap = [{
     component: () => import('@/views/goods/index'),
     meta: {
       title: '商品列表',
-      icon: 'table'
+      icon: 'calendar'
     }
   }, {
     path: 'add',
@@ -64,7 +64,7 @@ export const constantRouterMap = [{
     component: () => import('@/views/goods/add'),
     meta: {
       title: '添加商品',
-      icon: 'table'
+      icon: 'add'
     }
   }]
 },
@@ -76,7 +76,7 @@ export const constantRouterMap = [{
     name: 'Category',
     meta: {
       title: '类别管理',
-      icon: 'table'
+      icon: 'archive'
     },
     children: [{
       path: 'index',
@@ -84,7 +84,7 @@ export const constantRouterMap = [{
       component: () => import('@/views/category/index'),
       meta: {
         title: '类别列表',
-        icon: 'table'
+        icon: 'calendar'
       }
     }, {
       path: 'add',
@@ -92,7 +92,7 @@ export const constantRouterMap = [{
       component: () => import('@/views/category/add'),
       meta: {
         title: '添加类别',
-        icon: 'eye'
+        icon: 'add'
       }
     }]
   },
@@ -104,7 +104,7 @@ export const constantRouterMap = [{
   name: 'Order',
   meta: {
     title: '订单管理',
-    icon: 'table'
+    icon: 'calculator'
   },
   children: [{
     path: 'index',
@@ -112,7 +112,15 @@ export const constantRouterMap = [{
     component: () => import('@/views/order/index'),
     meta: {
       title: '订单列表',
-      icon: 'eye'
+      icon: 'calendar'
+    }
+  }, {
+    path: 'accept',
+    name: 'AcceptOrder',
+    component: () => import('@/views/order/accept'),
+    meta: {
+      title: '待接单',
+      icon: 'clock'
     }
   }]
 },
@@ -124,7 +132,7 @@ export const constantRouterMap = [{
   name: 'Info',
   meta: {
     title: '信息统计',
-    icon: 'table'
+    icon: 'file'
   },
   children: [{
     path: 'time',
@@ -132,7 +140,7 @@ export const constantRouterMap = [{
     component: () => import('@/views/info/time'),
     meta: {
       title: '按时间统计',
-      icon: 'example'
+      icon: 'clock'
     }
   }, {
     path: 'goods',
@@ -140,7 +148,7 @@ export const constantRouterMap = [{
     component: () => import('@/views/info/goods'),
     meta: {
       title: '按商品统计',
-      icon: 'table'
+      icon: 'price-tag'
     }
   }]
 },

@@ -12,6 +12,16 @@ export function getOrders(start=0, offset=30) {
   })
 }
 
+export function getOrdersByStatus(status) {
+  return request({
+    url: '/admin/orders',
+    method: 'get',
+    params: {
+      status: status
+    }
+  })
+}
+
 export function getOrder(orderId) {
   return request({
     url: '/order',
