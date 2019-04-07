@@ -45,12 +45,13 @@
           <el-row v-if="type=='index'"><el-button type="text" size="small" @click="handleEdit(scope.row, scope.$index)">编辑</el-button></el-row>
           <el-row v-if="type=='index'"><el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)" circle></el-button></el-row>
           <el-row v-if="type=='accept'"><el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">接单</el-button></el-row>
+          <el-row v-if="type=='refund'"><el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">同意退款</el-button></el-row>
         </template>
       </el-table-column>
     </el-table>
     <el-col :offset="11" v-if="type=='index'"><el-button @click="loadMore">{{hasMore?'加载更多':'没有更多'}}</el-button></el-col>
     <EditOrder :order="currentOrder" @cancel="isVisible = false" @confirm="isVisible = false" :is-visible="isVisible"/>
-    <PrintOrder v-if="type=='accept'" :orders="orders" id="print-order" v-show="isPrint"/>
+    <PrintOrder v-if="type=='accept'" :orders="printOrders" id="print-order" v-show="isPrint"/>
   </div>
 </template>
 
@@ -80,7 +81,8 @@
         start: 0,
         offset: 30,
         switchAutoAccept: true,
-        orders: []
+        orders: [],
+        printOrders: []
       }
     },
     computed: {
@@ -112,6 +114,13 @@
           this.$store.commit('SET_NEW_ORDER_NUM', this.orders.length)
         })
       }
+      if(this.type=='refund') {
+        getOrdersByStatus('申请退款中').then(response => {
+          this.orders = response.data.orders
+          this.currentOrder = this.orders[0]
+          this.$store.commit('SET_NEW_ORDER_NUM', this.orders.length)
+        })
+      }
     },
     methods: {
       handleClick: function(row, index) {
@@ -126,18 +135,35 @@
         }
         if (this.type=='accept') {
           row.status = '已接单'
+          this.printOrders = [row]
+          this.isPrint = true
+          this.$nextTick(() => {
+            print('print-order', 'html')
+          })
           editOrder(row).then(response => {
             if (response.code != 20000) {
               row.status = originStatus
             } else {
               getOrdersByStatus('已下单').then(response => {
+                this.isPrint = false
                 this.orders = response.data.orders
                 this.$store.commit('SET_NEW_ORDER_NUM', this.orders.length)
               })
             }
           })
         }
-
+        if (this.type=='refund') {
+          row.status = '已退款'
+          editOrder(row).then(response => {
+            if (response.code != 20000) {
+              row.status = originStatus
+            } else {
+              getOrdersByStatus('申请退款中').then(response => {
+                this.orders = response.data.orders
+              })
+            }
+          })
+        }
       },
       handleEdit: function(row, index) {
         this.currentOrder = row
@@ -196,7 +222,8 @@
         this.$store.commit('CHANGE_AUTO_ACCEPT', newVal)
       },
       handleAcceptAll: function () {
-        let promises = [];
+        let promises = []
+        this.printOrders = this.orders
         this.isPrint = true
         this.$nextTick(() => {
           print('print-order', 'html')

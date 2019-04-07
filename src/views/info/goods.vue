@@ -63,6 +63,14 @@
         this.chart.setOption(this.option)
       })
     },
+    created: function() {
+      this.startTime = new Date();
+      this.startTime.setDate(this.startTime.getDate() - 1)
+      this.startDate = new Date();
+      this.startDate.setDate(this.startDate.getDate() - 1)
+      this.endTime = new Date();
+      this.endDate = new Date();
+    },
     methods: {
       handleClick: function () {
         getInfoByGood(this.startDate.getTime(), this.endDate.getTime()).then(response => {

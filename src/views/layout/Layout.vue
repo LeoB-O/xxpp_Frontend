@@ -1,7 +1,7 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <audio src="http://localhost:8080/static/newOrder.mp3" hidden id="orderNotice"></audio>
-    <audio src="http://localhost:8080/static/autoAccept.mp3" hidden id="autoAccept"></audio>
+    <audio :src="baseUrl+ '/static/newOrder.mp3'" hidden id="orderNotice"></audio>
+    <audio :src="baseUrl + '/static/autoAccept.mp3'" hidden id="autoAccept"></audio>
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"/>
     <sidebar class="sidebar-container"/>
     <div class="main-container">
@@ -31,6 +31,7 @@ export default {
   data() {
     return {
       io: '',
+      baseUrl: '',
       currentOrder: {}
     }
   },
@@ -42,7 +43,8 @@ export default {
     getOrdersByStatus('已下单').then(response => {
       this.$store.commit('SET_NEW_ORDER_NUM', response.data.orders.length)
     })
-    this.io = io('localhost:3000')
+    this.baseUrl = process.env.BASE_URL
+    this.io = io(process.env.BASE_API)
     this.io.on('newOrder', (data) => {
       let notice = document.getElementById('orderNotice')
       let accept = document.getElementById('autoAccept')

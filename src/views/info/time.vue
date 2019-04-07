@@ -51,6 +51,14 @@ export default {
       }
     }
   },
+  created: function() {
+    this.startTime = new Date();
+    this.startTime.setDate(this.startTime.getDate() - 1)
+    this.startDate = new Date();
+    this.startDate.setDate(this.startDate.getDate() - 1)
+    this.endTime = new Date();
+    this.endDate = new Date();
+  },
   mounted: function() {
     this.chart = echarts.init(document.getElementById('chart'))
     getInfoByTime().then(response => {
@@ -60,7 +68,11 @@ export default {
   },
   methods: {
     handleClick: function() {
-      getInfoByTime(this.startDate.getTime(), this.endDate.getTime()).then(response => {
+      let start = new Date(this.startDate)
+      let end = new Date(this.endDate)
+      start.setHours(this.startTime.getHours(), this.startTime.getMinutes(), this.startTime.getSeconds())
+      end.setHours(this.endTime.getHours(), this.endTime.getMinutes(), this.endTime.getSeconds())
+      getInfoByTime(start.getTime(), end.getTime()).then(response => {
         this.option = response.data.option
         this.chart.setOption(this.option)
       })

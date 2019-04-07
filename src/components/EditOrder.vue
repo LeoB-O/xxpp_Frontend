@@ -25,6 +25,8 @@
           <el-option value="已下单"/>
           <el-option value="已接单"/>
           <el-option value="已送达"/>
+          <el-option value="申请退款中"/>
+          <el-option value="已退款"/>
         </el-select>
       </el-form-item>
       <el-form-item label="选购的商品">
@@ -65,7 +67,7 @@ export default {
     },
     order: {
       type: Object,
-      default: {}
+      default: () => ({})
     }
   },
   data() {

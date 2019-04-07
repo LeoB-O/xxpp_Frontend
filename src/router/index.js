@@ -122,6 +122,14 @@ export const constantRouterMap = [{
       title: '待接单',
       icon: 'clock'
     }
+  }, {
+    path: 'refund',
+    name: 'RefundOrder',
+    component: () => import('@/views/order/refund'),
+    meta: {
+      title: '退款订单',
+      icon: 'eye'
+    }
   }]
 },
 

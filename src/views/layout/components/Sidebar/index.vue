@@ -1,5 +1,5 @@
 <template>
-  <el-scrollbar wrap-class="scrollbar-wrapper">
+  <!--<el-scrollbar wrap-class="scrollbar-wrapper">-->
     <el-menu
       :default-active="$route.path"
       :collapse="isCollapse"
@@ -11,7 +11,7 @@
     >
       <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path"/>
     </el-menu>
-  </el-scrollbar>
+  <!--</el-scrollbar>-->
 </template>
 
 <script>
