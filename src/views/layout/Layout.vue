@@ -48,19 +48,21 @@ export default {
     this.io.on('newOrder', (data) => {
       let notice = document.getElementById('orderNotice')
       let accept = document.getElementById('autoAccept')
-      if (this.$store.state.order.autoAccept) {
-        // 直接执行打印逻辑
-        // data是新订单的内容
-        accept.play()
-        this.currentOrder = data.order
-        this.$nextTick(() => {
-          print('print-order', 'html')
-        })
-      } else {
-        // 新订单+1
-        notice.play()
-        this.$store.commit('NEW_ORDER')
-      }
+      notice.play()
+      this.$store.commit('NEW_ORDER')
+      // if (this.$store.state.order.autoAccept) {
+      //   // 直接执行打印逻辑
+      //   // data是新订单的内容
+      //   accept.play()
+      //   this.currentOrder = data.order
+      //   this.$nextTick(() => {
+      //     print('print-order', 'html')
+      //   })
+      // } else {
+      //   // 新订单+1
+      //   notice.play()
+      //   this.$store.commit('NEW_ORDER')
+      // }
     })
   },
   computed: {

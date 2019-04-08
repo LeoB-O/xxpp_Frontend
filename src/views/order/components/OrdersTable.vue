@@ -3,7 +3,7 @@
     <el-switch active-text="营业中" v-model="switchAutoAccept" @change="handleAutoAccept"/>
     <el-button v-if="type=='accept'" type="primary" @click="handleAcceptAll">一键接单</el-button>
     <div>你有 {{newOrderNum}} 个新订单</div>
-    <el-table :data="orders">
+    <el-table :data="orders" v-loading="loading">
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline>
@@ -78,6 +78,7 @@
         isVisible: false,
         isPrint: false,
         hasMore: true,
+        loading: false,
         currentOrder: {},
         start: 0,
         offset: 30,
@@ -102,11 +103,13 @@
     created: function() {
       this.switchAutoAccept = this.$store.state.order.autoAccept //实际上是是否接单
       setShopStatus(this.switchAutoAccept)
+      this.loading = true
       if(this.type=='index') {
         getOrders(this.start, this.offset).then(response => {
           this.orders = response.data.orders
           this.currentOrder = this.orders[0]
           this.start += this.offset
+          this.loading = false
         })
       }
       if(this.type=='accept') {
@@ -114,6 +117,7 @@
           this.orders = response.data.orders
           this.currentOrder = this.orders[0]
           this.$store.commit('SET_NEW_ORDER_NUM', this.orders.length)
+          this.loading = false
         })
       }
       if(this.type=='refund') {
@@ -121,6 +125,7 @@
           this.orders = response.data.orders
           this.currentOrder = this.orders[0]
           this.$store.commit('SET_NEW_ORDER_NUM', this.orders.length)
+          this.loading = false
         })
       }
     },
@@ -231,19 +236,37 @@
         this.$nextTick(() => {
           print('print-order', 'html')
         })
-        for (let order of this.orders) {
-          promises.push(new Promise(((resolve, reject) => {
-            order.status = '已接单'
-            editOrder(order).then(response => {
-              if (response.code == 20000) {
-                resolve()
-              } else {
-                reject()
+        let accept = () => {
+          console.log(this.orders);
+          if (this.orders.length == 0) {
+            return;
+          } else {
+            while (this.orders.length > 0) {
+              let order = this.orders.shift();
+              console.log(promises)
+              promises.push(new Promise(((resolve, reject) => {
+                order.status = '已接单'
+                editOrder(order).then(response => {
+                  if (response.code == 20000) {
+                    resolve()
+                  } else {
+                    reject()
+                  }
+                })
+              })))
+              if (promises.length == 30) {
+                Promise.all(promises).then(() => {
+                  promises = [];
+                  accept();
+                })
+                break
               }
-            })
-          })))
+            }
+          }
         }
+        accept()
         Promise.all(promises).then(() => {
+          console.log('ok');
           getOrdersByStatus('已下单').then(response => {
             this.orders = response.data.orders
             this.isPrint = false
