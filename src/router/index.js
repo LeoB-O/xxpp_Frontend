@@ -161,6 +161,25 @@ export const constantRouterMap = [{
   }]
 },
 
+  {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/password',
+    name: 'User',
+    meta: {
+      title: '用户管理',
+      icon: 'user'
+    },
+    children: [{
+      path: 'password',
+      component: () => import('@/views/user/password'),
+      meta: {
+        title: '修改密码',
+        icon: 'password'
+      }
+    }]
+  },
+
 {
   path: '*',
   redirect: '/404',

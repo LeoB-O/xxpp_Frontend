@@ -1,7 +1,7 @@
 const order = {
   state: {
     newOrderNum: 0,
-    autoAccept: false
+    autoAccept: true
   },
   mutations: {
     NEW_ORDER: state => {

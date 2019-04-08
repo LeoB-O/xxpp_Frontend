@@ -51,3 +51,13 @@ export function deleteOrder(orderId) {
     }
   })
 }
+
+export function setShopStatus(status) {
+  return request({
+    url: '/admin/setting/status',
+    method: 'put',
+    data: {
+      status: status
+    }
+  })
+}

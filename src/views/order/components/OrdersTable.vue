@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-switch active-text="自动接单" v-model="switchAutoAccept" @change="handleAutoAccept"/>
+    <el-switch active-text="营业中" v-model="switchAutoAccept" @change="handleAutoAccept"/>
     <el-button v-if="type=='accept'" type="primary" @click="handleAcceptAll">一键接单</el-button>
     <div>你有 {{newOrderNum}} 个新订单</div>
     <el-table :data="orders">
@@ -62,6 +62,7 @@
   import print from 'print-js'
 
   import {deleteOrder, editOrder, getOrders, getOrdersByStatus} from "@/api/order";
+  import {setShopStatus} from "../../../api/order";
 
   export default {
     name: 'OrdersTable',
@@ -99,7 +100,8 @@
       }
     },
     created: function() {
-      this.switchAutoAccept = this.$store.state.order.autoAccept
+      this.switchAutoAccept = this.$store.state.order.autoAccept //实际上是是否接单
+      setShopStatus(this.switchAutoAccept)
       if(this.type=='index') {
         getOrders(this.start, this.offset).then(response => {
           this.orders = response.data.orders
@@ -220,6 +222,7 @@
       },
       handleAutoAccept: function (newVal) {
         this.$store.commit('CHANGE_AUTO_ACCEPT', newVal)
+        setShopStatus(newVal)
       },
       handleAcceptAll: function () {
         let promises = []

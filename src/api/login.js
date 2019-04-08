@@ -25,3 +25,14 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function changePassword(oldPassword, newPassword) {
+  return request({
+    url: '/admin/password',
+    method: 'put',
+    data: {
+      oldPassword: oldPassword,
+      newPassword: newPassword
+    }
+  })
+}
