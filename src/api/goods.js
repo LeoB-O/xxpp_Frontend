@@ -96,4 +96,12 @@ export function uploadPic(files) {
   })
 }
 
+export function setIndexItems(items) {
+  return request({
+    url: '/admin/setting/items',
+    method: 'post',
+    data: {items: items}
+  })
+}
+
 export const picUploadUrl = process.env.BASE_API + '/admin/upload'

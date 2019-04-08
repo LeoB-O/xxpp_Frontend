@@ -1,6 +1,11 @@
 <template>
   <div class="app-container">
-    <el-table :data="goods" @expand-change="handleExpand">
+    <el-table :data="goods" @expand-change="handleExpand" @selection-change="handleSelectionChange">
+      <el-table-column
+        label="首页轮播"
+        type="selection"
+        width="55">
+      </el-table-column>
       <el-table-column type="expand">
         <template slot-scope="reviews">
           <el-form label-position="left" inline>
@@ -48,7 +53,7 @@
 <script>
 import EditGood from '@/components/EditGood'
 
-import {getGoods, changeStatus, deleteGood} from '../../api/goods'
+import {getGoods, changeStatus, deleteGood, setIndexItems} from '../../api/goods'
 import {deleteReview, getReviews} from "../../api/reviews";
 
 export default {
@@ -73,10 +78,12 @@ export default {
           stock: value.stock,
           status: value.status,
           pictures: value.pictures,
+          previewPic: value.previewPic,
           description: value.description,
           price: value.price,
           options: value.options,
           reviews: [],
+          sale: value.sale,
           start: 0,
           offset: 30,
           hasMore: true
@@ -201,6 +208,13 @@ export default {
           }
         })
       }).catch((e) => {
+      })
+    },
+    handleSelectionChange: function (val) {
+      console.log(val)
+      setIndexItems(val).then(response => {
+        if (response.code == 20000) this.$message.success('设置首页显示成功')
+        else this.$message.error('设置首页显示失败')
       })
     }
   }
