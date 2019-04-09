@@ -46,6 +46,7 @@
           <el-row v-if="type=='index'"><el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDelete(scope.row)" circle></el-button></el-row>
           <el-row v-if="type=='accept'"><el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">接单</el-button></el-row>
           <el-row v-if="type=='refund'"><el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">同意退款</el-button></el-row>
+          <el-row v-if="type=='refund'"><el-button type="text" size="small" @click="handleReject(scope.row, scope.$index)">拒绝退款</el-button></el-row>
         </template>
       </el-table-column>
     </el-table>
@@ -178,6 +179,18 @@
             }
           })
         }
+      },
+      handleReject: function(row, index) {
+        row.status = '退款已拒绝'
+        editOrder(row).then(response => {
+          if (response.code != 20000) {
+            row.status = originStatus
+          } else {
+            getOrdersByStatus('申请退款中').then(response => {
+              this.orders = response.data.orders
+            })
+          }
+        })
       },
       handleEdit: function(row, index) {
         this.currentOrder = row

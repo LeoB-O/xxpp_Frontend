@@ -27,6 +27,7 @@
           <el-option value="已送达"/>
           <el-option value="申请退款中"/>
           <el-option value="已退款"/>
+          <el-option value="退款已拒绝"/>
         </el-select>
       </el-form-item>
       <el-form-item label="选购的商品">
