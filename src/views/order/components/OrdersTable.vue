@@ -63,7 +63,7 @@
   import print from 'print-js'
 
   import {deleteOrder, editOrder, getOrders, getOrdersByStatus} from "@/api/order";
-  import {setShopStatus} from "../../../api/order";
+  import {setShopStatus} from "../../../api/config";
 
   export default {
     name: 'OrdersTable',

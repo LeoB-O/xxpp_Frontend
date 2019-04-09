@@ -167,7 +167,7 @@ export const constantRouterMap = [{
     redirect: '/user/password',
     name: 'User',
     meta: {
-      title: '用户管理',
+      title: '系统设置',
       icon: 'user'
     },
     children: [{
@@ -176,6 +176,13 @@ export const constantRouterMap = [{
       meta: {
         title: '修改密码',
         icon: 'password'
+      }
+    }, {
+      path: 'settings',
+      component: () => import('@/views/user/setting'),
+      meta: {
+        title: '店铺设置',
+        icon: 'form'
       }
     }]
   },
