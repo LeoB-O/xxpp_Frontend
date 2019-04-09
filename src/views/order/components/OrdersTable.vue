@@ -113,12 +113,19 @@
         })
       }
       if(this.type=='accept') {
-        getOrdersByStatus('已下单').then(response => {
-          this.orders = response.data.orders
-          this.currentOrder = this.orders[0]
-          this.$store.commit('SET_NEW_ORDER_NUM', this.orders.length)
-          this.loading = false
-        })
+        let loadData = (start, offset) => {
+          getOrdersByStatus('已下单', start, offset).then(response => {
+            this.orders = this.orders.concat(response.data.orders)
+            if (response.data.orders.length > 0) {
+              loadData(start+offset, offset)
+            } else {
+              this.currentOrder = this.orders[0]
+              this.$store.commit('SET_NEW_ORDER_NUM', this.orders.length)
+              this.loading = false
+            }
+          })
+        }
+        loadData(0, 100)
       }
       if(this.type=='refund') {
         getOrdersByStatus('申请退款中').then(response => {
