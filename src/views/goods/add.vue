@@ -28,7 +28,9 @@
           :auto-upload="true"
           :file-list="form.pictures"
           list-type="picture"
+          accept="image/*"
           :on-success="handleSuccess"
+          :on-remove="handleRemove"
           :headers="{Authorization: token}">
           <el-button size="small" type="primary">点击上传</el-button>
           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件</div>
@@ -85,17 +87,14 @@ export default {
         name: '',
         category: {name: ''},
         stock: 0,
-        options: [{
-          key: '选项1',
-          values: ['值1']
-        }],
+        options: [],
         pictures: [],
         previewPic: '',
         status: '',
         description: '',
         price: 0
       },
-      categories: [{ name: '补充维生素' }],
+      categories: [],
       uploadUrl: picUploadUrl
     }
   },
@@ -120,23 +119,18 @@ export default {
     },
     handleSubmit: function() {
       addGood(this.form).then((response) => {
-        if (response.code == 20000) {
-          this.$message({
-            type: 'success',
-            message: '提交成功'
-          })
-          this.$refs['form'].resetFields()
-        } else {
-          this.$message.error('网络错误')
-        }
+        this.$message.success('提交成功 ')
+        this.$refs['form'].resetFields()
       })
     },
     handleSuccess: function(response, file, fileList) {
-      console.log(response);
       this.form.pictures.push({
         name: response.data.file.filename,
         url: response.data.file.path
       })
+    },
+    handleRemove: function (file, fileList) {
+      this.form.pictures = fileList
     }
   }
 }
