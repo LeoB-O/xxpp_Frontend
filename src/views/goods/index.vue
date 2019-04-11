@@ -56,6 +56,7 @@ import EditGood from '@/components/EditGood'
 import {getGoods, changeStatus, deleteGood, setIndexItems} from '../../api/goods'
 import {deleteReview, getReviews} from "../../api/reviews";
 import {getSettings} from "../../api/config";
+import {showConfirm} from '../../utils/index'
 
 export default {
   name: 'Index',
@@ -68,7 +69,8 @@ export default {
       indexItems: [],
       isVisible: false,
       currentGood: '',
-      firstLoad: true
+      firstLoad: true,
+      showConfirm: showConfirm.bind(this)
     }
   },
   created: function() {
@@ -137,14 +139,6 @@ export default {
       this.currentGood = row.id
       this.isVisible = !this.isVisible
       this.getData()
-    },
-    showConfirm: function(submitCallback) {
-      this.$confirm('此操作将永久删除该项目, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(submitCallback)
-        .catch(() => {this.$message.info('已取消删除')});
     },
     handleDelete: function(row) {
       this.showConfirm(() => {

@@ -18,21 +18,14 @@
     name: "add",
     data() {
       return {
-        form: {
-          name: ''
-        }
+        form: {name: ''}
       }
     },
     methods: {
       handleSubmit: function () {
-        addCategory(this.form.name).then(response => {
-          if (response.code == 20000) {
-            this.$message({
-              type: 'success',
-              message: '提交成功'
-            })
-            this.$refs['form'].resetFields()
-          }
+        addCategory(this.form.name).then(() => {
+          this.$message.success('提交成功')
+          this.$refs['form'].resetFields()
         })
       }
     }

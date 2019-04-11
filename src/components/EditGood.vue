@@ -97,6 +97,10 @@ export default {
       type: Array,
       default: () => []
     },
+    previewPic: {
+      type: String,
+      default: ''
+    },
     description: {
       type: String,
       default: ''
@@ -144,6 +148,7 @@ export default {
         this.form.stock = good.stock || this.stock
         this.form.options = good.options || this.options
         this.form.pictures = good.pictures || this.pictures
+        this.form.previewPic = good.previewPic || this.previewPic
         this.form.description = good.description || this.description
         this.form.price = good.price || this.price
       })

@@ -19,7 +19,6 @@
 <script>
 import echarts from 'echarts'
 import {getInfoByTime} from "../../api/info";
-import {getInfo} from "../../api/login";
 
 export default {
   name: 'Time',

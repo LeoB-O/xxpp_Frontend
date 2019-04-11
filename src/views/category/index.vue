@@ -14,45 +14,29 @@
 
 <script>
   import {deleteCategory, getCategories} from '../../api/goods';
+  import {showConfirm} from "../../utils";
+
   export default {
     name: "index",
     data() {
       return {
-        categories: [{id: '123', name: '美容养颜'}]
+        categories: [],
+        showConfirm: showConfirm.bind(this)
       }
     },
-    created: function() {
+    created: function () {
       getCategories().then(response => {
         this.categories = response.data.categories
       })
     },
     methods: {
       handleDelete(row) {
-        // todo 弹框确认删除
-        this.$confirm('此操作将永久删除该项目, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          deleteCategory(row.id).then(response => {
-            if (response.code == 20000) {
-              this.$message({
-                type: 'success',
-                message: '删除成功'
-              })
-            }
-            return
-          }).then(() => {
-            getCategories().then(response => {
-              this.categories = response.data.categories
-            })
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
+        this.showConfirm(() => {
+          deleteCategory(row.id)
+            .then(() => {this.$message.success('删除成功')})
+            .then(() => {return getCategories()})
+            .then(response => {this.categories = response.data.categories})
+        })
       }
     }
   }

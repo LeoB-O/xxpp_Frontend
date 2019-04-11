@@ -48,7 +48,8 @@ export default {
     this.io.on('newOrder', (data) => {
       let notice = document.getElementById('orderNotice')
       let accept = document.getElementById('autoAccept')
-      notice.play()
+      this.$message.info('您有新订单！')
+      notice.play().catch(e => {this.$message.warning('新订单！由于浏览器原因，提示音未能播放！')})
       this.$store.commit('NEW_ORDER')
       // if (this.$store.state.order.autoAccept) {
       //   // 直接执行打印逻辑
