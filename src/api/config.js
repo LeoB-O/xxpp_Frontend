@@ -42,3 +42,13 @@ export function setEstimateTime(time) {
     }
   })
 }
+
+export function setSelfPickUpAddress(address) {
+  return request({
+    url: '/admin/setting/selfPickUpAddress',
+    method: 'put',
+    data: {
+      address: address
+    }
+  })
+}

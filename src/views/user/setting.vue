@@ -1,5 +1,8 @@
 <template>
   <el-form label-width="80px" ref="form" :model="form">
+    <el-form-item label="自提地址" prop="selfPickUpAddress">
+      <el-input v-model="form.selfPickUpAddress"/>
+    </el-form-item>
     <el-form-item label="客服电话" prop="customerServicePhone">
       <el-input v-model="form.customerServicePhone"/>
     </el-form-item>
@@ -13,7 +16,7 @@
 </template>
 
 <script>
-  import {getSettings, setCustomerServicePhone, setEstimateTime} from "../../api/config";
+  import {getSettings, setCustomerServicePhone, setEstimateTime, setSelfPickUpAddress} from "../../api/config";
 
   export default {
     name: "setting",
@@ -21,7 +24,8 @@
       return {
         form: {
           customerServicePhone: '',
-          estimateTime: ''
+          estimateTime: '',
+          selfPickUpAddress: ''
         }
       }
     },
@@ -29,6 +33,7 @@
       getSettings().then(response => {
         this.form.customerServicePhone = response.data.settings.customerServicePhone
         this.form.estimateTime = response.data.settings.estimateTime
+        this.form.selfPickUpAddress = response.data.settings.selfPickUpAddress
       })
     },
     methods: {
@@ -36,6 +41,7 @@
         let promises = [];
         promises.push(setCustomerServicePhone(this.form.customerServicePhone))
         promises.push(setEstimateTime(this.form.estimateTime))
+        promises.push(setSelfPickUpAddress(this.form.selfPickUpAddress))
         Promise.all(promises).then(() => {
           this.$message.success('修改成功')
         })
