@@ -25,21 +25,28 @@
       </el-table-column>
       <el-table-column prop="id" label="ID"/>
       <el-table-column prop="name" label="商品名称"/>
-      <el-table-column prop="price" label="价格"/>
+      <el-table-column prop="originPrice" label="原价"/>
+      <el-table-column prop="price" label="售价"/>
       <el-table-column prop="category.name" label="所属类别"/>
       <el-table-column prop="stock" label="剩余库存"/>
-      <el-table-column label="可选项">
+      <!--<el-table-column label="可选项">-->
+        <!--<template slot-scope="scope">-->
+          <!--<span v-for="option in scope.row.options" :key="option.key">{{ option.key }} </span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+      <el-table-column prop="status" label="状态"/>
+      <el-table-column  label="最晚送达">
         <template slot-scope="scope">
-          <span v-for="option in scope.row.options" :key="option.key">{{ option.key }} </span>
+          <div v-if="scope.row.finalDeliverTime>0">{{scope.row.finalDeliverTime}}天内</div>
+          <div v-else>现货</div>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="状态"/>
       <el-table-column
         fixed="right"
         label="操作"
         width="100">
         <template slot-scope="scope">
-          <el-row v-if="scope.row.status!= '销售中'"><el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">上架</el-button></el-row>
+          <el-row v-if="scope.row.status== '下架'"><el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">上架</el-button></el-row>
             <el-row v-else><el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">下架</el-button></el-row>
             <el-row><el-button type="text" size="small" @click="handleEdit(scope.row, scope.$index)">编辑</el-button></el-row>
             <el-row><el-button size="mini" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)" circle></el-button></el-row>
@@ -95,7 +102,9 @@ export default {
               pictures: value.pictures,
               previewPic: value.previewPic,
               description: value.description,
+              finalDeliverTime: value.finalDeliverTime,
               price: value.price,
+              originPrice: value.originPrice,
               options: value.options,
               reviews: [],
               sale: value.sale,
@@ -144,7 +153,7 @@ export default {
       this.showConfirm(() => {
         deleteGood(row.id).then(() => {
           this.$message.success('删除成功')
-          this.loadData()
+          this.getData()
         })
       })
     },

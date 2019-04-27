@@ -25,10 +25,20 @@ export function setShopStatus(status) {
 
 export function setCustomerServicePhone(phone) {
   return request({
-    url: 'admin/setting/customerServicePhone',
+    url: '/admin/setting/customerServicePhone',
     method: 'put',
     data: {
       customerServicePhone: phone
+    }
+  })
+}
+
+export function setEstimateTime(time) {
+  return request({
+    url: '/admin/setting/estimateTime',
+    method: 'put',
+    data: {
+      time: time
     }
   })
 }

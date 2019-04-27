@@ -10,13 +10,16 @@
             <el-form-item label="商品">
               <div v-for="item in props.row.items" :key="item.key">
                 <span>{{ item.name }}</span>
-                <span class="options">
-                  <div v-for="option in item.options" :key="option.key">{{option.key}}:{{option.value}}</div>
-                </span>
+                <!--<span class="options">-->
+                  <!--<div v-for="option in item.options" :key="option.key">{{option.key}}:{{option.value}}</div>-->
+                <!--</span>-->
                 <span>¥{{ item.price }}</span>
                 <span>x{{ item.amount }}</span>
                 <span>{{ totalPrice(item) }}</span>
               </div>
+            </el-form-item>
+            <el-form-item label="备注">
+              <div>{{props.row.note}}</div>
             </el-form-item>
           </el-form>
         </template>
@@ -34,6 +37,11 @@
       <el-table-column label="下单时间">
         <template slot-scope="time">
           {{new Date(time.row.createTime).toLocaleString()}}
+        </template>
+      </el-table-column>
+      <el-table-column label="配送时间">
+        <template slot-scope="time">
+          {{new Date(time.row.requestDeliverTime).toLocaleString()}}
         </template>
       </el-table-column>
       <el-table-column
@@ -58,7 +66,7 @@
             <el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">接单</el-button>
           </el-row>
           <el-row v-if="type=='refund'">
-            <el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">同意退款</el-button>
+            <el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">处理退款</el-button>
           </el-row>
           <el-row v-if="type=='refund'">
             <el-button type="text" size="small" @click="handleReject(scope.row, scope.$index)">拒绝退款</el-button>
@@ -80,7 +88,7 @@
   import {mapGetters} from 'vuex'
   import print from 'print-js'
   import {deleteOrder, editOrder, getOrders, getOrdersByStatus} from "@/api/order";
-  import {setShopStatus} from "../../../api/config";
+  import {getSettings, setShopStatus} from "../../../api/config";
   import {showConfirm} from "../../../utils";
 
   export default {
@@ -121,8 +129,12 @@
       }
     },
     created: function () {
-      this.switchAutoAccept = this.$store.state.order.autoAccept //实际上是是否接单
-      setShopStatus(this.switchAutoAccept)
+      getSettings().then(response => {
+        this.switchAutoAccept = response.data.settings.isOpen
+        this.$store.commit('CHANGE_AUTO_ACCEPT', this.switchAutoAccept)
+      })
+      // this.switchAutoAccept = this.$store.state.order.autoAccept //实际上是是否接单
+      // setShopStatus(this.switchAutoAccept)
       this.loading = true
       if (this.type == 'index') {
         getOrders(this.start, this.offset).then(response => {
@@ -172,7 +184,7 @@
           this.$nextTick(() => {
             print({printable: 'print-order', type: 'html', targetStyles: ['*']})
             editOrder(row)
-              .then(() => getOrdersByStatus('已下单'))
+              .then(() => getOrdersByStatus('配送中'))
               .then(response => {
                 this.isPrint = false
                 this.orders = response.data.orders
@@ -184,15 +196,16 @@
           })
         }
         if (this.type == 'refund') {
-          row.status = '已退款'
-          editOrder(row)
-            .then(() => getOrdersByStatus('申请退款中'))
-            .then(response => {
-              this.orders = response.data.orders
-            })
-            .catch(() => {
-              row.status = originStatus
-            })
+          window.open('https://pay.weixin.qq.com/index.php/core/trade/search_new')
+          // row.status = '已退款'
+          // editOrder(row)
+          //   .then(() => getOrdersByStatus('申请退款中'))
+          //   .then(response => {
+          //     this.orders = response.data.orders
+          //   })
+          //   .catch(() => {
+          //     row.status = originStatus
+          //   })
         }
       },
       handleReject: function (row, index) {
@@ -261,7 +274,7 @@
             promises = [];
             while (this.orders.length > 0) {
               let order = this.orders.shift();
-              order.status = '已接单';
+              order.status = '配送中';
               promises.push(new Promise(((resolve, reject) => {
                 editOrder(order)
                   .then(() => {

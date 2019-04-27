@@ -22,6 +22,9 @@
       <div>
         {{order.province + order.city + order.district + order.detail}}
       </div>
+      <div>
+        备注：{{order.note}}
+      </div>
       <hr/>
     </div>
   </div>

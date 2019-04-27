@@ -13,13 +13,20 @@
         <el-select v-model="form.status">
           <el-option label="下架" value="下架"/>
           <el-option label="销售中" value="销售中"/>
+          <el-option label="预售中" value="预售中"/>
         </el-select>
       </el-form-item>
       <el-form-item label="剩余库存" prop="stock">
         <el-input-number v-model="form.stock"/>
       </el-form-item>
-      <el-form-item label="价格">
+      <el-form-item label="原价">
+        <el-input-number v-model="form.originPrice"/>
+      </el-form-item>
+      <el-form-item label="售价">
         <el-input-number v-model="form.price"/>
+      </el-form-item>
+      <el-form-item label="送达时间">
+        <div><el-input-number v-model="form.finalDeliverTime"/> 天内</div>
       </el-form-item>
       <el-form-item label="商品图片" prop="pictures">
         <el-upload
@@ -44,28 +51,28 @@
       <el-form-item label="商品详情" prop="description">
         <el-input :autosize="{minRows: 10}" type="textarea" v-model="form.description"/>
       </el-form-item>
-      <el-form-item label="可选项" prop="options">
-        <div v-for="(option, index) in form.options" :key="index">
-          <el-row>
-            <el-col :span="10">
-              <el-input v-model="option.key"/>
-              <el-button @click="addValue(index)">添加值</el-button>
-              <el-button @click="removeOption(index)">删除</el-button>
-            </el-col>
-            <el-col :span="10">
-              <el-row v-for="(value, valueIndex) in option.values" :key="value.key">
-                <el-input v-model="option.values[valueIndex]"/>
-                <el-button @click="removeValue(index, valueIndex)">删除</el-button>
-              </el-row>
-            </el-col>
-          </el-row>
-        </div>
-        <el-row>
-          <el-col :span="10">
-            <el-button @click="addOption">添加选项</el-button>
-          </el-col>
-        </el-row>
-      </el-form-item>
+      <!--<el-form-item label="可选项" prop="options">-->
+        <!--<div v-for="(option, index) in form.options" :key="index">-->
+          <!--<el-row>-->
+            <!--<el-col :span="10">-->
+              <!--<el-input v-model="option.key"/>-->
+              <!--<el-button @click="addValue(index)">添加值</el-button>-->
+              <!--<el-button @click="removeOption(index)">删除</el-button>-->
+            <!--</el-col>-->
+            <!--<el-col :span="10">-->
+              <!--<el-row v-for="(value, valueIndex) in option.values" :key="value.key">-->
+                <!--<el-input v-model="option.values[valueIndex]"/>-->
+                <!--<el-button @click="removeValue(index, valueIndex)">删除</el-button>-->
+              <!--</el-row>-->
+            <!--</el-col>-->
+          <!--</el-row>-->
+        <!--</div>-->
+        <!--<el-row>-->
+          <!--<el-col :span="10">-->
+            <!--<el-button @click="addOption">添加选项</el-button>-->
+          <!--</el-col>-->
+        <!--</el-row>-->
+      <!--</el-form-item>-->
       <el-form-item>
         <el-col :span="12">
           <el-button type="primary" size="large" class="submit" @click="handleSubmit">提交</el-button>
@@ -92,7 +99,9 @@ export default {
         previewPic: '',
         status: '',
         description: '',
-        price: 0
+        price: 0,
+        originPrice: 0,
+        finalDeliverTime: 0
       },
       categories: [],
       uploadUrl: picUploadUrl
@@ -121,7 +130,7 @@ export default {
       addGood(this.form).then((response) => {
         this.$message.success('提交成功 ')
         this.$refs['form'].resetFields()
-      })
+      }).catch((err) => this.$message.error(err))
     },
     handleSuccess: function(response, file, fileList) {
       this.form.pictures.push({

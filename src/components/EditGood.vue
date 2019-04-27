@@ -9,11 +9,24 @@
           <el-option v-for="category in categories" :key="category.name" :label="category.name" :value="category.name"/>
         </el-select>
       </el-form-item>
+      <el-form-item label="当前状态" prop="status">
+        <el-select v-model="form.status">
+          <el-option label="下架" value="下架"/>
+          <el-option label="销售中" value="销售中"/>
+          <el-option label="预售中" value="预售中"/>
+        </el-select>
+      </el-form-item>
       <el-form-item label="剩余库存">
         <el-input-number v-model="form.stock"/>
       </el-form-item>
-      <el-form-item label="价格">
+      <el-form-item label="原价">
+        <el-input-number v-model="form.originPrice"/>
+      </el-form-item>
+      <el-form-item label="售价">
         <el-input-number v-model="form.price"/>
+      </el-form-item>
+      <el-form-item label="送达时间">
+        <div><el-input-number v-model="form.finalDeliverTime"/> 天内</div>
       </el-form-item>
       <el-form-item label="商品图片">
         <el-upload
@@ -37,28 +50,28 @@
       <el-form-item label="商品详情">
         <el-input :autosize="{minRows: 10}" type="textarea" v-model="form.description"/>
       </el-form-item>
-      <el-form-item label="可选项">
-        <div v-for="(option, index) in form.options" :key="index">
-          <el-row>
-            <el-col :span="10">
-              <el-input v-model="option.key"/>
-              <el-button @click="addValue(index)">添加值</el-button>
-              <el-button @click="removeOption(index)">删除</el-button>
-            </el-col>
-            <el-col :span="10">
-              <el-row v-for="(value, valueIndex) in option.values" :key="value.key">
-                <el-input v-model="option.values[valueIndex]"/>
-                <el-button @click="removeValue(index, valueIndex)">删除</el-button>
-              </el-row>
-            </el-col>
-          </el-row>
-        </div>
-        <el-row>
-          <el-col :span="10">
-            <el-button @click="addOption">添加选项</el-button>
-          </el-col>
-        </el-row>
-      </el-form-item>
+      <!--<el-form-item label="可选项">-->
+        <!--<div v-for="(option, index) in form.options" :key="index">-->
+          <!--<el-row>-->
+            <!--<el-col :span="10">-->
+              <!--<el-input v-model="option.key"/>-->
+              <!--<el-button @click="addValue(index)">添加值</el-button>-->
+              <!--<el-button @click="removeOption(index)">删除</el-button>-->
+            <!--</el-col>-->
+            <!--<el-col :span="10">-->
+              <!--<el-row v-for="(value, valueIndex) in option.values" :key="value.key">-->
+                <!--<el-input v-model="option.values[valueIndex]"/>-->
+                <!--<el-button @click="removeValue(index, valueIndex)">删除</el-button>-->
+              <!--</el-row>-->
+            <!--</el-col>-->
+          <!--</el-row>-->
+        <!--</div>-->
+        <!--<el-row>-->
+          <!--<el-col :span="10">-->
+            <!--<el-button @click="addOption">添加选项</el-button>-->
+          <!--</el-col>-->
+        <!--</el-row>-->
+      <!--</el-form-item>-->
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="handleCancel">取 消</el-button>
@@ -117,12 +130,15 @@ export default {
         id: '',
         name: '',
         category: '',
+        status: '',
         stock: 0,
         options: [], // todo 库存结构{value: '', stock}
         pictures: [],
         previewPic: '',
         description: '',
-        price: 0
+        price: 0,
+        originPrice: 0,
+        finalDeliverTime: 0
       },
       token: '',
       categories: [],
@@ -145,12 +161,15 @@ export default {
         const good = response.data.good
         this.form.name = good.name || this.name
         this.form.category = good.category || this.category
+        this.form.status = good.status || this.status
         this.form.stock = good.stock || this.stock
         this.form.options = good.options || this.options
         this.form.pictures = good.pictures || this.pictures
         this.form.previewPic = good.previewPic || this.previewPic
         this.form.description = good.description || this.description
         this.form.price = good.price || this.price
+        this.form.originPrice = good.originPrice || this.originPrice
+        this.form.finalDeliverTime = good.finalDeliverTime || 0
       })
     }
   },
