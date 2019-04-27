@@ -49,11 +49,11 @@
         label="操作"
         width="100">
         <template slot-scope="scope">
-          <el-row v-if="type=='index' && scope.row.status != '已送达'">
-            <el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">确认送达</el-button>
+          <el-row v-if="(type=='index'||type=='deliver') && scope.row.status == '已接单'">
+            <el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">开始配送</el-button>
           </el-row>
-          <el-row v-if="type=='index' && scope.row.status == '已送达'">
-            <el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">取消送达</el-button>
+          <el-row v-if="(type=='index'||type=='deliver') && scope.row.status == '配送中'">
+            <el-button type="text" size="small" @click="handleClick(scope.row, scope.$index)">确认送达</el-button>
           </el-row>
           <el-row v-if="type=='index'">
             <el-button type="text" size="small" @click="handleEdit(scope.row, scope.$index)">编辑</el-button>
@@ -144,6 +144,13 @@
           this.loading = false
         })
       }
+      if (this.type == 'deliver') {
+        getOrdersByStatus('已接单').then(response => {
+          this.orders = response.data.orders
+          this.currentOrder = this.orders[0]
+          this.loading = false
+        })
+      }
       if (this.type == 'accept') {
         let loadData = (start, offset) => {
           getOrdersByStatus('已下单', start, offset).then(response => {
@@ -163,7 +170,6 @@
         getOrdersByStatus('申请退款中').then(response => {
           this.orders = response.data.orders
           this.currentOrder = this.orders[0]
-          this.$store.commit('SET_NEW_ORDER_NUM', this.orders.length)
           this.loading = false
         })
       }
@@ -172,7 +178,7 @@
       handleClick: function (row, index) {
         let originStatus = row.status
         if (this.type == 'index') {
-          row.status = row.status == '已送达' ? '配送中' : '已送达'
+          row.status = row.status == '已接单' ? '配送中' : '已送达'
           editOrder(row).catch(() => {
             row.status = originStatus
           })

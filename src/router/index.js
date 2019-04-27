@@ -123,6 +123,14 @@ export const constantRouterMap = [{
       icon: 'clock'
     }
   }, {
+    path: 'deliver',
+    name: 'DeliverOrder',
+    component: () => import('@/views/order/deliver'),
+    meta: {
+      title: '待配送',
+      icon: 'clock'
+    }
+  }, {
     path: 'refund',
     name: 'RefundOrder',
     component: () => import('@/views/order/refund'),

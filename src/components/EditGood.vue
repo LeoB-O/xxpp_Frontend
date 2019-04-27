@@ -25,7 +25,10 @@
       <el-form-item label="售价">
         <el-input-number v-model="form.price"/>
       </el-form-item>
-      <el-form-item label="送达时间">
+      <el-form-item label="最早送达时间">
+        <div><el-input-number v-model="form.earliestDeliverTime"/> 天后</div>
+      </el-form-item>
+      <el-form-item label="最晚送达时间">
         <div><el-input-number v-model="form.finalDeliverTime"/> 天内</div>
       </el-form-item>
       <el-form-item label="商品图片">
@@ -138,6 +141,7 @@ export default {
         description: '',
         price: 0,
         originPrice: 0,
+        earliestDeliverTime: 0,
         finalDeliverTime: 0
       },
       token: '',
@@ -169,6 +173,7 @@ export default {
         this.form.description = good.description || this.description
         this.form.price = good.price || this.price
         this.form.originPrice = good.originPrice || this.originPrice
+        this.form.earliestDeliverTime = good.earliestDeliverTime || 0
         this.form.finalDeliverTime = good.finalDeliverTime || 0
       })
     }
