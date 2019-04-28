@@ -28,7 +28,8 @@
       <el-table-column prop="name" label="收货人"/>
       <el-table-column label="收货地址">
         <template slot-scope="address">
-          {{address.row.province + address.row.city + address.row.district + address.row.detail}}
+          <div v-if="!address.row.isSelfPickUp">{{address.row.province + address.row.city + address.row.district + address.row.detail}}</div>
+          <div v-else>自提</div>
         </template>
       </el-table-column>
       <el-table-column prop="phone" label="联系电话"/>
@@ -47,8 +48,8 @@
       </el-table-column>
       <el-table-column label="配送时间">
         <template slot-scope="time">
-          <div v-if="!time.row.isPreSale">{{new Date(time.row.requestDeliverTime).toLocaleString()}}</div>
-          <div v-else>{{time.row.items[0].options[0].value[0] + time.row.items[0].options[0].value[1]}}</div>
+          <div v-if="!time.row.isPreSale">{{time.row.requestDeliverTime}}</div>
+          <div v-else>{{time.row.items[0].options[0].value[0] + ' ' + time.row.items[0].options[0].value[1]}}</div>
         </template>
       </el-table-column>
       <el-table-column
@@ -155,6 +156,9 @@
         getOrdersByStatus('已接单').then(response => {
           this.orders = response.data.orders
           this.currentOrder = this.orders[0]
+          return getOrdersByStatus('配送中')
+        }).then(response => {
+          this.orders = this.orders.concat(response.data.orders)
           this.loading = false
         })
       }
@@ -191,12 +195,16 @@
           })
         }
         if (this.type == 'accept') {
-          row.status = '已接单'
+          let order = {
+            id: row.id,
+            status: '已接单'
+          }
+          // row.status = '已接单'
           this.printOrders = [row]
           this.isPrint = true
           this.$nextTick(() => {
             print({printable: 'print-order', type: 'html', targetStyles: ['*']})
-            editOrder(row)
+            editOrder(order)
               .then(() => getOrdersByStatus('已下单'))
               .then(response => {
                 this.isPrint = false
@@ -294,9 +302,13 @@
             promises = [];
             while (this.orders.length > 0) {
               let order = this.orders.shift();
+              let sOrder = {
+                id: order.id,
+                status: '已接单'
+              };
               order.status = '已接单';
               promises.push(new Promise(((resolve, reject) => {
-                editOrder(order)
+                editOrder(sOrder)
                   .then(() => {
                     resolve()
                   })

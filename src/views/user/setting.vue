@@ -1,5 +1,5 @@
 <template>
-  <el-form label-width="80px" ref="form" :model="form">
+  <el-form label-width="100px" ref="form" :model="form">
     <el-form-item label="自提地址" prop="selfPickUpAddress">
       <el-input v-model="form.selfPickUpAddress"/>
     </el-form-item>
@@ -11,6 +11,7 @@
     </el-form-item>
     <el-form-item label="可配送时间" prop="deliverTime">
       <el-time-picker
+        style="width: auto;"
         is-range
         value-format="HH:mm"
         v-model="form.deliverTime"

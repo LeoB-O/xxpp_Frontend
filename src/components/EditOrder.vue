@@ -37,11 +37,11 @@
               <el-option v-for="good in goods" :key="good.id" :value="good.id" :label="good.name"/>
             </el-select>
           </el-col>
-          <el-col :span="4">
-            <el-select v-for="option in getGoodById(item.id).options" v-model="item.options[getOptionIndex(item, option.key)].value" :key="option.key" :placeholder="option.key">
-              <el-option v-for="val in option.values" :key="val.key" :value="val"/>
-            </el-select>
-          </el-col>
+          <!--<el-col :span="4">-->
+            <!--<el-select v-for="option in getGoodById(item.id).options" v-model="item.options[getOptionIndex(item, option.key)].value" :key="option.key" :placeholder="option.key">-->
+              <!--<el-option v-for="val in option.values" :key="val.key" :value="val"/>-->
+            <!--</el-select>-->
+          <!--</el-col>-->
           <el-col :span="4">
             <el-input-number v-model="item.amount" size="small"/>
           </el-col>

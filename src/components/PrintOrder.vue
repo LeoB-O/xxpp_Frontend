@@ -20,7 +20,12 @@
         {{order.phone}}
       </div>
       <div>
-        {{order.province + order.city + order.district + order.detail}}
+        <div v-if="!order.isSelfPickUp">{{order.province + order.city + order.district + order.detail}}</div>
+        <div v-else>自提</div>
+      </div>
+      <div>
+        <div v-if="order.isPreSale">配送时间：{{order.items[0].options[0].value[0]+order.items[0].options[0].value[1]}}</div>
+        <div v-else>配送时间：{{order.requestDeliverTime}}</div>
       </div>
       <div>
         备注：{{order.note}}
