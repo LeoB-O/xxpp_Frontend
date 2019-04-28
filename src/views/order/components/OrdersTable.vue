@@ -34,6 +34,12 @@
       <el-table-column prop="phone" label="联系电话"/>
       <el-table-column prop="status" label="状态" :filter-method="statusFilter"
                        :filters="[{text: '已下单', value: '已下单'},{text: '已接单', value: '已接单'},{text: '配送中', value: '配送中'},{text: '已送达', value: '已送达'}]"/>
+      <el-table-column prop="isPreSale" label="是否预售" :filter-method="preSaleFilter"
+                       :filters="[{text: '预售', value: '预售'}, {text: '现货', value: '现货'}]">
+        <template slot-scope="scope">
+          {{scope.row.isPreSale?'是':'否'}}
+        </template>
+      </el-table-column>
       <el-table-column label="下单时间">
         <template slot-scope="time">
           {{new Date(time.row.createTime).toLocaleString()}}
@@ -41,7 +47,8 @@
       </el-table-column>
       <el-table-column label="配送时间">
         <template slot-scope="time">
-          {{new Date(time.row.requestDeliverTime).toLocaleString()}}
+          <div v-if="!time.row.isPreSale">{{new Date(time.row.requestDeliverTime).toLocaleString()}}</div>
+          <div v-else>{{time.row.items[0].options[0].value[0] + time.row.items[0].options[0].value[1]}}</div>
         </template>
       </el-table-column>
       <el-table-column
@@ -177,7 +184,7 @@
     methods: {
       handleClick: function (row, index) {
         let originStatus = row.status
-        if (this.type == 'index') {
+        if (this.type == 'index' || this.type == 'deliver') {
           row.status = row.status == '已接单' ? '配送中' : '已送达'
           editOrder(row).catch(() => {
             row.status = originStatus
@@ -190,7 +197,7 @@
           this.$nextTick(() => {
             print({printable: 'print-order', type: 'html', targetStyles: ['*']})
             editOrder(row)
-              .then(() => getOrdersByStatus('配送中'))
+              .then(() => getOrdersByStatus('已下单'))
               .then(response => {
                 this.isPrint = false
                 this.orders = response.data.orders
@@ -250,6 +257,13 @@
       statusFilter: function (value, row, col) {
         return row.status == value
       },
+      preSaleFilter: function (value, row, col) {
+        // return row.isPreSale
+        if (value == '预售')
+          return row.isPreSale
+        else
+          return !row.isPreSale
+      },
       loadMore: function () {
         let originScrollTop = document.documentElement.scrollTop;
         getOrders(this.start, this.offset).then(response => {
@@ -280,7 +294,7 @@
             promises = [];
             while (this.orders.length > 0) {
               let order = this.orders.shift();
-              order.status = '配送中';
+              order.status = '已接单';
               promises.push(new Promise(((resolve, reject) => {
                 editOrder(order)
                   .then(() => {

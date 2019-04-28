@@ -166,6 +166,14 @@ export const constantRouterMap = [{
       title: '按商品统计',
       icon: 'price-tag'
     }
+  }, {
+    path: 'export',
+    name: 'Export',
+    component: () => import('@/components/ExportOriginData'),
+    meta: {
+      title: '导出原始数据',
+      icon: 'price-tag'
+    }
   }]
 },
 

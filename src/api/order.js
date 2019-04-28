@@ -12,6 +12,17 @@ export function getOrders(start=0, offset=30) {
   })
 }
 
+export function getOrdersByTime(start, end) {
+  return request({
+    url: '/admin/orders',
+    method: 'get',
+    params: {
+      startTime: start,
+      endTime: end
+    }
+  })
+}
+
 export function getOrdersByStatus(status, start, offset) {
   return request({
     url: '/admin/orders',
