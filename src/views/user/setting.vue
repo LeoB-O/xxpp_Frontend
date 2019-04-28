@@ -9,6 +9,17 @@
     <el-form-item label="预计送达时间" prop="estimateTime">
       <el-input v-model="form.estimateTime"/>
     </el-form-item>
+    <el-form-item label="可配送时间" prop="deliverTime">
+      <el-time-picker
+        is-range
+        value-format="HH:mm"
+        v-model="form.deliverTime"
+        range-separator="至"
+        start-placeholder="开始时间"
+        end-placeholder="结束时间"
+        placeholder="选择时间范围">
+      </el-time-picker>
+    </el-form-item>
     <el-form-item>
       <el-button @click="handleSubmit">提交</el-button>
     </el-form-item>
@@ -16,7 +27,13 @@
 </template>
 
 <script>
-  import {getSettings, setCustomerServicePhone, setEstimateTime, setSelfPickUpAddress} from "../../api/config";
+  import {
+    getSettings,
+    setCustomerServicePhone,
+    setDeliverTime,
+    setEstimateTime,
+    setSelfPickUpAddress
+  } from "../../api/config";
 
   export default {
     name: "setting",
@@ -25,7 +42,8 @@
         form: {
           customerServicePhone: '',
           estimateTime: '',
-          selfPickUpAddress: ''
+          selfPickUpAddress: '',
+          deliverTime: ['08:00', '23:00'],
         }
       }
     },
@@ -34,6 +52,8 @@
         this.form.customerServicePhone = response.data.settings.customerServicePhone
         this.form.estimateTime = response.data.settings.estimateTime
         this.form.selfPickUpAddress = response.data.settings.selfPickUpAddress
+        this.form.deliverTime[0] = response.data.settings.startDeliverTime || '08:00'
+        this.form.deliverTime[1] = response.data.settings.endDeliverTime || '23:00'
       })
     },
     methods: {
@@ -42,6 +62,7 @@
         promises.push(setCustomerServicePhone(this.form.customerServicePhone))
         promises.push(setEstimateTime(this.form.estimateTime))
         promises.push(setSelfPickUpAddress(this.form.selfPickUpAddress))
+        promises.push(setDeliverTime(this.form.deliverTime[0], this.form.deliverTime[1]))
         Promise.all(promises).then(() => {
           this.$message.success('修改成功')
         })

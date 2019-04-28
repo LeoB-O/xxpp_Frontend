@@ -52,3 +52,14 @@ export function setSelfPickUpAddress(address) {
     }
   })
 }
+
+export function setDeliverTime(start, end) {
+  return request({
+    url: '/admin/setting/deliverTime',
+    method: 'put',
+    data: {
+      startDeliverTime: start,
+      endDeliverTime: end
+    }
+  })
+}
