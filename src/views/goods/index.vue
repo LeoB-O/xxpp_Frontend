@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-table ref="table" :data="goods" @expand-change="loadReviews" @selection-change="handleSelectionChange">
+    <el-table ref="table" :data="goods" @expand-change="loadReviews" @selection-change="handleSelectionChange" v-loading="loading">
       <el-table-column
         label="首页轮播"
         type="selection"
@@ -77,6 +77,7 @@ export default {
       isVisible: false,
       currentGood: '',
       firstLoad: true,
+      loading: true,
       showConfirm: showConfirm.bind(this)
     }
   },
@@ -85,6 +86,7 @@ export default {
   },
   methods: {
     getData: function() {
+      this.loading = true
       this.firstLoad = true
       getSettings()
         .then(response => {
@@ -123,6 +125,7 @@ export default {
             })
           })
           this.firstLoad = false;
+          this.loading = false;
         })
         .catch((e) => {
         })
